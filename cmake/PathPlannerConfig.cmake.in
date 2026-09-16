@@ -1,0 +1,27 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+include("${CMAKE_CURRENT_LIST_DIR}/PathPlannerTargets.cmake")
+
+# Fail fast when the exported target is missing or misconfigured.
+if(NOT TARGET SummonSoftwareLabs::PathPlanner)
+  set(PathPlanner_FOUND FALSE)
+  set(PathPlanner_NOT_FOUND_MESSAGE
+      "PathPlanner package is corrupt: SummonSoftwareLabs::PathPlanner was not exported.")
+  return()
+endif()
+
+get_target_property(_pathplanner_includes SummonSoftwareLabs::PathPlanner INTERFACE_INCLUDE_DIRECTORIES)
+if(NOT _pathplanner_includes)
+  set(PathPlanner_FOUND FALSE)
+  set(PathPlanner_NOT_FOUND_MESSAGE
+      "PathPlanner package is corrupt: SummonSoftwareLabs::PathPlanner exposes no include directories.")
+  return()
+endif()
+
+set(PathPlanner_VERSION "@PROJECT_VERSION@")
+set(PathPlanner_PLANNING_RULE_VERSION "@PROJECT_VERSION_MAJOR@")
+set(PathPlanner_LIBRARY_TARGET "SummonSoftwareLabs::PathPlanner")
+
+check_required_components(PathPlanner)
